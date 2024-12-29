@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 mkcxx() {
-  local -r version="$0 version 1.0.4"
+  local -r version="$0 version 1.0.5~fff"
   local -r usage="$(cat <<END
 Usage:
 $0 [-s source] [-b build] [-f] [<flags> ...] [-h|-v]
@@ -16,15 +16,15 @@ END
   
   local source_dir; source_dir="$(pwd -P)"
   local build_dir;  build_dir="${source_dir}/build"
-  local dirty;
+  local fresh;
   
-  while getopts ":b:s:hdv:" opt; do
+  while getopts ":b:s:hfv:" opt; do
     case ${opt} in
       b) build_dir="${OPTARG}"
     ;;
       s) source_dir="${OPTARG}"
     ;;
-      d) dirty="--fresh"
+      f) fresh="--fresh"
     ;;
       h) printf "%s\n" "$usage"
     ;;
@@ -43,8 +43,6 @@ END
   
   # Advance $@ to the current option, passing the remaing opts to cmake.
   shift "$((OPTIND - 1))"
-  command cmake -S "$source_dir" -B "$build_dir" "$dirty" "$@"
+  command cmake -S "$source_dir" -B "$build_dir" "$fresh" "$@"
   return "$?"
 }
-  
-  mkcxx "$@"
