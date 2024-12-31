@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 mkcxx() {
-  local -r version="$0 version 1.0.8~parens"
+  local -r version="$0 version 1.1.0~Ih8Bash"
   local -r usage="$(cat <<END
 Usage:
-$0 [-s source] [-b build] [-f] [<flags> ...] [-h|-v]
+$0 [-s source] [-b build] [-f] [-X "flag"] [-h|-v]
   -s source:  Path to source directory (default: \$PWD).
   -b build:		Path to build directory (default: \${PWD}/build).
   -f		      Pass --fresh to CMake.
-  flags		    The flags to be appended to the CMake command
+  -X flag:    A flags to be appended to the CMake command. (As a double quoted string)
   -h		      Prints this help message.
   -v          Prints version information.
 END
@@ -18,13 +18,15 @@ END
   local build_dir;  build_dir="${source_dir}/build"
   local -a flags; flags=()
   
-  while getopts ":b:s:hfv" opt; do
+  while getopts ":b:s:hfvX:" opt; do
     case ${opt} in
       b) build_dir="${OPTARG}"
     ;;
       s) source_dir="${OPTARG}"
     ;;
       f) flags+=("--fresh")
+    ;;
+      X) flags+=("$OPTARG")
     ;;
       h) printf "%s\n" "$usage"
     ;;
@@ -43,7 +45,9 @@ END
   
   # Advance $@ to the current option, passing the remaing opts to cmake.
   shift "$((OPTIND - 1))"
-  [[ -z "$*" ]] || flags+=("$*")
+  [[ -z "$*" ]] || flags+=("$@")
   command cmake -S "$source_dir" -B "$build_dir" "${flags[@]}"
   return "$?"
 }
+
+mkcxx "$@"
