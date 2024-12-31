@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 mkcxx() {
-  local -r version="$0 version 1.0.7~no.stars"
+  local -r version="$0 version 1.0.8~parens"
   local -r usage="$(cat <<END
 Usage:
 $0 [-s source] [-b build] [-f] [<flags> ...] [-h|-v]
@@ -24,7 +24,7 @@ END
     ;;
       s) source_dir="${OPTARG}"
     ;;
-      f) flags+="--fresh"
+      f) flags+=("--fresh")
     ;;
       h) printf "%s\n" "$usage"
     ;;
