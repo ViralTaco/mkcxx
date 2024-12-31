@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 mkcxx() {
-  local -r version="$0 version 1.0.5~fff"
+  local -r version="$0 version 1.0.6~empty.strings"
   local -r usage="$(cat <<END
 Usage:
 $0 [-s source] [-b build] [-f] [<flags> ...] [-h|-v]
@@ -16,15 +16,15 @@ END
   
   local source_dir; source_dir="$(pwd -P)"
   local build_dir;  build_dir="${source_dir}/build"
-  local fresh;
+  local -a flags; flags=()
   
-  while getopts ":b:s:hfv:" opt; do
+  while getopts ":b:s:hfv" opt; do
     case ${opt} in
       b) build_dir="${OPTARG}"
     ;;
       s) source_dir="${OPTARG}"
     ;;
-      f) fresh="--fresh"
+      f) flags+="--fresh"
     ;;
       h) printf "%s\n" "$usage"
     ;;
@@ -36,6 +36,7 @@ END
       ?) printf "Invalid option: -%s.\n" "${OPTARG}"
        return 1
     ;;
+      *) printf "getopts got: '%s'. Ignoring.\n" "${OPTARG}"
     esac
   done
   # If "$build_dir" doesn't exist create it.
@@ -43,6 +44,7 @@ END
   
   # Advance $@ to the current option, passing the remaing opts to cmake.
   shift "$((OPTIND - 1))"
-  command cmake -S "$source_dir" -B "$build_dir" "$fresh" "$@"
+  [[ -z "$*" ]] || flags+=("$*")
+  command cmake -S "$source_dir" -B "$build_dir" "${flags[@]}"
   return "$?"
 }
