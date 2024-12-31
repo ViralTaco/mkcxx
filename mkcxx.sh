@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 mkcxx() {
-  local -r version="$0 version 1.0.6~empty.strings"
+  local -r version="$0 version 1.0.7~no.stars"
   local -r usage="$(cat <<END
 Usage:
 $0 [-s source] [-b build] [-f] [<flags> ...] [-h|-v]
@@ -36,7 +36,6 @@ END
       ?) printf "Invalid option: -%s.\n" "${OPTARG}"
        return 1
     ;;
-      *) printf "getopts got: '%s'. Ignoring.\n" "${OPTARG}"
     esac
   done
   # If "$build_dir" doesn't exist create it.
