@@ -49,5 +49,3 @@ END
   command cmake -S "$source_dir" -B "$build_dir" "${flags[@]}"
   return "$?"
 }
-
-mkcxx "$@"
